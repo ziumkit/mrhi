@@ -1,14 +1,46 @@
 const std = @import("std");
+const builtin = @import("builtin");
+
+fn featVkShouldEnable() bool {
+    return switch (builtin.os.tag) {
+        .linux => true,
+        else => false,
+    };
+}
+
+fn featMetalShouldEnable() bool {
+    return switch (builtin.os.tag) {
+        .macos => true,
+        else => false,
+    };
+}
+
+fn featD3D11ShouldEnable() bool {
+    return switch (builtin.os.tag) {
+        .windows => true,
+        else => false,
+    };
+}
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // Build options
+    const options = b.addOptions();
+    options.addOption(bool, "enable_vk", featVkShouldEnable());
+    options.addOption(bool, "enable_metal", featMetalShouldEnable());
+    options.addOption(bool, "enable_d3d11", featD3D11ShouldEnable());
+    options.addOption(bool, "enable_gles3", false);
+
+    // Main module
     const mod = b.addModule("mrhi", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
     });
+
+    mod.addOptions("config", options);
 
     const libmrhi = b.addLibrary(.{
         .name = "mrhi",
