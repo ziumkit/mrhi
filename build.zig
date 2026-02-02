@@ -26,17 +26,21 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const enable_vk = b.option(bool, "enable_vk", "enabling vulkan backend") orelse featVkShouldEnable();
+    const enable_metal = b.option(bool, "enable_metal", "enabling metal backend") orelse featMetalShouldEnable();
+    const enable_d3d11 = b.option(bool, "enable_d3d11", "enabling d3d11 backend") orelse featD3D11ShouldEnable();
+
     // Build options
     const options = b.addOptions();
-    options.addOption(bool, "enable_vk", featVkShouldEnable());
-    options.addOption(bool, "enable_metal", featMetalShouldEnable());
-    options.addOption(bool, "enable_d3d11", featD3D11ShouldEnable());
-    options.addOption(bool, "enable_gles3", false);
+    options.addOption(bool, "enable_vk", enable_vk);
+    options.addOption(bool, "enable_metal", enable_metal);
+    options.addOption(bool, "enable_d3d11", enable_d3d11);
 
     // Main module
     const mod = b.addModule("mrhi", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
+        .link_libc = true,
         .optimize = optimize,
     });
 
