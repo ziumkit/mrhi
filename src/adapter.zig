@@ -1,1 +1,1 @@
-pub const Adapter = 
+pub const Adapter = struct {};
