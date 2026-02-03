@@ -1,3 +1,3 @@
 const device = @import("device.zig");
-pub const VulkanGPU = device.VulkanGPU;
-pub const VulkanGPUOption = device.VulkanGPUOption;
+pub const MVkGPU = device.MVkGPU;
+pub const MVkGPUOption = device.MVkGPUOption;
